@@ -26,6 +26,7 @@
 .typing-test {
     box-shadow: 0 0 5px gray;
     margin-bottom: 20px;
+    z-index: 0;
 }
 
 .user-input {

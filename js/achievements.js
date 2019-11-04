@@ -237,43 +237,109 @@ export default {
         {
             label: 'Perfect!',
             description: 'Complete a test with 100% accuracy.',
+            svg: 'perfect',
             isFulfilled: function(tests) {
                 return this.helpers.totalPerfectTests(tests) >= 1;
+            },
+            getProgress(tests) {
+                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+
+                const progress = Math.min(perfectTests, 1);
+                
+                return {
+                    label: `${progress} / 1`,
+                    percent: progress / 1 * 100,
+                };
             },
         },
         {
             label: 'Accuracy I',
             description: 'Complete 10 tests with 100% accuracy.',
+            svg: 'accuracy1',
             isFulfilled: function(tests) {
                 return this.helpers.totalPerfectTests(tests) >= 10;
+            },
+            getProgress(tests) {
+                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+
+                const progress = Math.min(perfectTests, 10);
+                
+                return {
+                    label: `${progress} / 10`,
+                    percent: progress / 10 * 100,
+                };
             },
         },
         {
             label: 'Accuracy II',
             description: 'Complete 50 tests with 100% accuracy.',
+            svg: 'accuracy2',
             isFulfilled: function(tests) {
                 return this.helpers.totalPerfectTests(tests) >= 50;
+            },
+            getProgress(tests) {
+                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+
+                const progress = Math.min(perfectTests, 50);
+                
+                return {
+                    label: `${progress} / 50`,
+                    percent: progress / 50 * 100,
+                };
             },
         },
         {
             label: 'Accuracy III',
             description: 'Complete 100 tests with 100% accuracy.',
+            svg: 'accuracy3',
             isFulfilled: function(tests) {
                 return this.helpers.totalPerfectTests(tests) >= 100;
+            },
+            getProgress(tests) {
+                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+
+                const progress = Math.min(perfectTests, 100);
+                
+                return {
+                    label: `${progress} / 100`,
+                    percent: progress / 100 * 100,
+                };
             },
         },
         {
             label: 'Accuracy IV',
             description: 'Complete 500 tests with 100% accuracy.',
+            svg: 'accuracy4',
             isFulfilled: function(tests) {
                 return this.helpers.totalPerfectTests(tests) >= 500;
+            },
+            getProgress(tests) {
+                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+
+                const progress = Math.min(perfectTests, 500);
+                
+                return {
+                    label: `${progress} / 500`,
+                    percent: progress / 500 * 100,
+                };
             },
         },
         {
             label: 'Accuracy V',
             description: 'Complete 1000 tests with 100% accuracy.',
+            svg: 'accuracy5',
             isFulfilled: function(tests) {
                 return this.helpers.totalPerfectTests(tests) >= 1000;
+            },
+            getProgress(tests) {
+                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+
+                const progress = Math.min(perfectTests, 1000);
+                
+                return {
+                    label: `${progress} / 1000`,
+                    percent: progress / 1000 * 100,
+                };
             },
         },
 

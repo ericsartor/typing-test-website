@@ -1,4 +1,6 @@
 - forgot password
+- fix box shadow on typing test going ovre nav
+- profile/profile editing
 - referal system
 - add experience points to achievements
 - more achievements

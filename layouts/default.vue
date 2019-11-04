@@ -131,6 +131,10 @@ export default {
                     label: 'Profile',
                     link: '/profile',
                 },
+                {
+                    label: 'Achievements',
+                    link: '/achievements',
+                },
             ],
             logInModalOpen: false,
             signUpModalOpen: false,
