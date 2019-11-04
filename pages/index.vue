@@ -3,7 +3,11 @@
         <app-typing-test @testcomplete="handleTest" />
         <!-- <pre v-for="(test, i) in tests" :key="i">{{ JSON.stringify(test, undefined, 2) }}</pre> -->
         
-        <div class="chart-container">
+        <h2 v-if="!profile" class="text-center mb-5">
+            Log in to track your progress, earn achievements and gain access to tailored tests!
+        </h2>
+
+        <div class="chart-container" :style="{ opacity: profile ? 1 : 0.2 }">
             <app-chart v-for="(setup, i) in lineGraphSetups" :setup="setup" width="30%" :key="Date.now() + 'line' + i" />
             <app-chart :setup="wordErrorGraphSetup" width="90%" height="200" :key="Date.now() + 'bar'" />
         </div>
