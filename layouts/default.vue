@@ -21,7 +21,7 @@
                 <app-button class="mr-3" type="blue" v-if="profile" @click="sendSignOutRequest">Log Out</app-button>
                 <app-button class="mr-3" type="blue" v-if="!profile" @click="logInModalOpen = true">Log In</app-button>
                 <app-button class="mr-3" type="pink" v-if="!profile" @click="signUpModalOpen = true">Sign Up</app-button>
-                <span class="mr-5" v-if="profile">Welcome back, {{ userEmailPrefix }}.</span>
+                <span class="mr-5" v-if="profile">Welcome back, <nuxt-link to="/profile" tag="a">{{ userEmailPrefix }}</nuxt-link>.</span>
             </div>
         </nav>
 
@@ -120,8 +120,8 @@ export default {
                     link: '/',
                 },
                 {
-                    label: 'Practice',
-                    link: '/practice',
+                    label: 'Leaderboards',
+                    link: '/leaderboards',
                 },
                 {
                     label: 'Games',
