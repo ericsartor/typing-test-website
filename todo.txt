@@ -1,38 +1,23 @@
-- level/achievement system
-    - show a list of all achievements, highlighting the ones the user has
-    - on test page, suggest achievements the user is close to getting
-    - achievements give XP
+- forgot password
+- referal system
+- add experience points to achievements
+- more achievements
+- create test uesrs for achievements
+- show a list of all achievements, highlighting the ones the user has
+- suggest achievements the user is close to getting
+- share on social media functionality
+- social media achievements need to be implemented
+- progress based achievements
+    - experience every time you reach a new personal best WPM
+- icons for achievements
+- high scores
+- difficulty setting (makes longer words)
+- profile page
     - achievements
-    
-        AMOUNT OF TESTS
-
-        - Welcome! - Complete your first test.
-        - Practice Makes Perfect - Complete 25 total tests.
-        - Addicted - Complete 100 total tests.
-
-        FREQUENCY OF VISITS
-
-        - Back For More - Complete a test on two consecutive days.
-        - I'm A Regular - Complete a test on five consecutive days.
-        - Dedicated - Complete a test on 30 consecutive days.
-
-        ACCURACY
-
-        - Attention To Detail - Complete 3 consecutive tests with 100% accuracy
-        - Master Of Precision - Complete 10 consecutive tests with 100% accuracy
-        - Perfect! - Complete a test with 100% accuracy
-        - Accuracy I - Complete 10 tests with 100% accuracy
-        - Accuracy II - Complete 50 tests with 100% accuracy
-        - Accuracy III - Complete 100 tests with 100% accuracy
-        - Accuracy IV - Complete 500 tests with 100% accuracy
-        - Accuracy V - Complete 1000 tests with 100% accuracy
-
-        WORD OF MOUTH MARKETING
-
-        - Check This Out! - Share the website on any social media platform.
-        - Recruiter - Be credited as a referal during a sign up.
-        - Team Player - Be credited as a referal during 10 sign ups.
-
-        PROGRESS
-
-        (achievements for improving average WPM and Accuracy)
+    - graphs
+        - customizable timeframe
+    - personal bests
+    - show number of tests/perfect tests
+    - rankings in high scores
+- games
+    - word attack (scrolling words, type to destroy)
