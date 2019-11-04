@@ -1,0 +1,53 @@
+.modal {
+    --width: 30vw;
+    position: fixed;
+    top:300px;
+    width: var(--width);
+    left: calc((100vw - var(--width)) / 2);
+    z-index: 1;
+    background-color: #F7F7FF;
+    color: #070600;
+    border: 1px solid #070600;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.modal h1 {
+    font-family: 'Josefin Sans';
+    font-weight: bold;
+}
+
+.modal hr {
+    border: none;
+    height: 1px;
+    background-color: #070600;
+    width: 90%;
+    margin: 20px 5%;
+}
+
+.modal input {
+    border: none;
+    padding: 6px;
+    background-color: #e7e7ef;
+    border-radius: 6px;
+}
+
+.modal .input-group {
+    display: flex;
+    flex-flow: column nowrap;
+    font-weight: bold;
+}
+
+.modal .input-group .input-error {
+    font-size: 0.7em;
+    color: #EA526F;
+}
+
+.modal .success {
+    color: #3DC2F7;
+}
+
+.modal .error {
+    color: #EA526F;
+}

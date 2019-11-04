@@ -15,3 +15,4 @@ const firebaseConfig = {
 !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : null;
 
 Vue.prototype.$auth = firebase.auth;
+Vue.prototype.$db = firebase.database;

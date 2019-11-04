@@ -12,11 +12,15 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Josefin+Sans|Sniglet|Ubuntu|Ubuntu+Mono&display=swap' }
     ],
     bodyAttrs: {
-        class: 'bg-dark'
-    }
+        style: 'margin: 0;padding: 0;font-family: "Josefin Sans";background-color: #F7F7FF;'
+    },
+    script: [
+        { src: 'https://cdn.jsdelivr.net/npm/chart.js@2.9.1/dist/Chart.min.js' },
+    ],
   },
   /*
   ** Customize the progress-bar color
@@ -26,7 +30,8 @@ export default {
   ** Global CSS
   */
   css: [
-      '@/assets/bootstrap.min.css'
+      '~/assets/tailwind.min.css',
+      '~/assets/modal.css'
   ],
   /*
   ** Plugins to load before mounting the App
@@ -60,6 +65,9 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+        if (ctx.isClient) {
+            config.devtool = '#source-map';
+        }
     }
   }
 }
