@@ -1,3 +1,4 @@
+- move check for logged in user logic to async data in default view
 - forgot password
 - fix box shadow on typing test going ovre nav
 - profile/profile editing
