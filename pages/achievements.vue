@@ -38,6 +38,7 @@
     flex-flow: row nowrap;
     width: 33.3%;
     margin: 10px 0;
+    padding: 0 5px;
 }
 
 .achievement img {
