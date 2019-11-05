@@ -1,16 +1,23 @@
 <template>
     <div>
         <div class="achievements">
-            <div class="achievement" v-for="(achievement, i) in achievements.achievements" :key="achievement.label">
+            <div
+                class="achievement"
+                v-for="achievement in achievements.achievements"
+                :key="achievement.label">
                 <img :src="achievement.svg ? `/svg/${achievement.svg}.svg` : ''">
                 <div class="achievement-text">
                    <span class="achievement-label">{{ achievement.label }}</span>
                    <p class="achievement-description">{{ achievement.description }}</p>
-                   <div class="progress-bar" v-if="achievement.getProgress">
-                       <div class="bar" :style="{ width: achievement.getProgress(tests).percent + '%' }"></div>
-                       <p class="progress-text">
-                           {{ achievement.getProgress(tests).label }}
-                        </p>
+                   <div class="progress-bar">
+                       <template v-if="achievement.getProgress">
+                            <div
+                                class="bar"
+                                :style="{ width: achievement.getProgress(tests).percent + '%' }" />
+                            <p class="progress-text">
+                                {{ achievement.getProgress(tests).label }}
+                            </p>
+                        </template>
                    </div>
                 </div>
             </div>

@@ -1,19 +1,21 @@
-<svg width="400.00000000000006" height="400.00000000000006" xmlns="http://www.w3.org/2000/svg">
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
  <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
  <g>
   <title>background</title>
-  <rect fill="#ffffff" id="canvas_background" height="402" width="402" y="-1" x="-1"/>
+  <rect fill="#fff" id="canvas_background" height="402" width="402" y="-1" x="-1"/>
   <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
    <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
   </g>
  </g>
  <g>
   <title>Layer 1</title>
-  <ellipse ry="170" rx="170" id="svg_8" cy="199.999998" cx="200" fill-opacity="0" stroke-opacity="null" stroke-width="10" stroke="#000" fill="#0fffff"/>
-  <line stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_10" y2="25.467699" x2="200.000006" y1="7.38917" x1="200.000006" fill-opacity="0" stroke-opacity="null" stroke-width="10" fill="none"/>
-  <line stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_11" y2="392.564353" x2="200.000006" y1="374.485824" x1="200.000006" fill-opacity="0" stroke-opacity="null" stroke-width="10" fill="none"/>
-  <line transform="rotate(90 16.77425384521482,200.00000000000003) " stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_12" y2="209.039264" x2="16.774254" y1="190.960735" x1="16.774254" fill-opacity="0" stroke-opacity="null" stroke-width="10" fill="none"/>
-  <line transform="rotate(90 383.22570800781256,200.00000000000003) " stroke="#000" stroke-linecap="null" stroke-linejoin="null" id="svg_13" y2="209.039262" x2="383.225767" y1="190.960733" x1="383.225767" fill-opacity="0" stroke-opacity="null" stroke-width="10" fill="none"/>
-  <text xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="250" id="svg_14" y="284.192777" x="116.747774" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">II</text>
+  <ellipse ry="160" rx="160" id="svg_1" cy="200" cx="200" stroke-width="14" stroke="#000" fill="#fff"/>
+  <ellipse ry="100" rx="100" id="svg_2" cy="200" cx="200" stroke-width="5" stroke="#000" fill="#fff"/>
+  <ellipse ry="8" rx="8" id="svg_3" cy="200" cx="200" stroke-width="5" stroke="#000" fill="#000000"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_4" y2="200" x2="176.613883" y1="200" x1="18.5" stroke-width="5" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_5" y2="200" x2="381.613883" y1="200" x1="223.5" stroke-width="5" stroke="#000" fill="none"/>
+  <line transform="rotate(-90 200,97.99999999999999) " stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_6" y2="98" x2="279.056937" y1="98" x1="120.943054" stroke-width="5" stroke="#000" fill="none"/>
+  <line transform="rotate(-90 200.00000000000009,302.00000000000006) " stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_7" y2="302" x2="279.056937" y1="302" x1="120.943054" stroke-width="5" stroke="#000" fill="none"/>
+  <text style="cursor: text;" xml:space="preserve" text-anchor="start" font-family="'Times New Roman', Times, serif" font-size="250" id="svg_8" y="284.5" x="116.75" stroke-width="3" stroke="#ffffff" fill="#000">II</text>
  </g>
 </svg>
