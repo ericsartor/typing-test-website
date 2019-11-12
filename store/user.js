@@ -37,3 +37,4 @@ export const mutations = {
         (state.profile ? state.profile.tests : state.tests).push(test);
     },
 }
+

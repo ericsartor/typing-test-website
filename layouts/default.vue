@@ -1,5 +1,7 @@
 <template>
 	<div>
+
+        <!-- navigation bar -->
 		<nav>
             <div class="logo">
                 <nuxt-link to="/" tag="a">click clackr</nuxt-link>
@@ -25,16 +27,20 @@
             </div>
         </nav>
 
+        <!-- sign up modal (hidden by default) -->
         <app-sign-up-modal
             v-if="signUpModalOpen"
             :sendSignUpRequest="sendSignUpRequest"
             @close="signUpModalOpen = false" />
         
+        <!-- log in modal (hidden by default) -->
         <app-log-in-modal
             v-if="logInModalOpen"
             :sendLogInRequest="sendLogInRequest"
             @close="logInModalOpen = false" />
 
+
+        <!-- page -->
 		<nuxt />
 	</div>
 </template>
@@ -52,6 +58,7 @@ nav {
     grid-template-columns: 200px 1fr 1fr;
     overflow: hidden;
     color: #F7F7FF;
+    position: relative;
 }
 
 nav > div {

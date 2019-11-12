@@ -1,26 +1,55 @@
-- move check for logged in user logic to async data in default view
-- forgot password
-- fix box shadow on typing test going ovre nav
 - profile/profile editing
+    - make profile page
+    - add elements for
+        - username
+        - achievements
+        - leaderboard rankings
+        - stats
+            - number of tests/perfect tests
+            - personal bests
+            - graphs
+                - customizable timeframe
+        - change password
+        - delete account
+    - add edit buttons for 
+        - username
+    - implement change password
+    - implement delete account
+    
 - referal system
+    - add referal ID input to sign up form
+    - on sign up, if referal ID present, increment that user's referal score
+    - on log in, check referal points against achievement requirements
+
+- add loading wheel to all buttons that cause async actions
+
 - add experience points to achievements
+
 - more achievements
-- create test uesrs for achievements
-- show a list of all achievements, highlighting the ones the user has
-- suggest achievements the user is close to getting
+    - referal achievements
+    - social media achievements
+    
+- progress indicators
+    - badges for improvement
+    - leaderboards for improvement
+
+- create test users for achievements
+
+- organize list of achievements on achievements page
+    - 100% first, then in progress, then not started
+
+- on test page and profile page, suggest achievements the user is close to getting
+
 - share on social media functionality
-- social media achievements need to be implemented
-- progress based achievements
-    - experience every time you reach a new personal best WPM
+    - facebook
+    - reddit
+
 - icons for achievements
-- high scores
+
 - difficulty setting (makes longer words)
-- profile page
-    - achievements
-    - graphs
-        - customizable timeframe
-    - personal bests
-    - show number of tests/perfect tests
-    - rankings in high scores
+    - each difficulty setting should track tests separately
+
 - games
     - word attack (scrolling words, type to destroy)
+
+- high scores for games

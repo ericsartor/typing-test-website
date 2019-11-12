@@ -16,3 +16,5 @@ const firebaseConfig = {
 
 Vue.prototype.$auth = firebase.auth;
 Vue.prototype.$db = firebase.database;
+
+export default firebase;
