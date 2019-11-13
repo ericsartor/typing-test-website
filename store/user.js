@@ -1,4 +1,9 @@
 export const state = () => ({
+    /*
+        {
+
+        }
+    */
     profile: null,
     tests: [], // these are the tests that are done while the user is not logged in
 });
@@ -9,6 +14,14 @@ export const getters = {
     tests(state) {
         return state.profile ? state.profile.tests : state.tests;
     },
+
+    displayName(state) {
+        const { profile } = state;
+        
+        return profile ? 
+            profile.displayName || profile.email.slice(0, profile.email.indexOf('@')) :
+            null;
+    }
 }
 
 export const mutations = {

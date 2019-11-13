@@ -10,7 +10,7 @@
                 <ul>
                     <li
                         class="mr-2"
-                        v-for="page in pages"
+                        v-for="page in visiblePages"
                         :class="{ active: $route.path === page.link }"
                         :key="page.label">
                         <nuxt-link tag="a" :to="page.link" active-class="active">
@@ -20,10 +20,22 @@
                 </ul>
             </div>
             <div class="account-buttons">
-                <app-button class="mr-3" type="blue" v-if="profile" @click="sendSignOutRequest">Log Out</app-button>
-                <app-button class="mr-3" type="blue" v-if="!profile" @click="logInModalOpen = true">Log In</app-button>
-                <app-button class="mr-3" type="pink" v-if="!profile" @click="signUpModalOpen = true">Sign Up</app-button>
-                <span class="mr-5" v-if="profile">Welcome back, <nuxt-link to="/profile" tag="a">{{ userEmailPrefix }}</nuxt-link>.</span>
+                <app-button
+                    class="mr-3"
+                    type="blue"
+                    v-if="profile"
+                    @click="sendSignOutRequest">Log Out</app-button>
+                <app-button
+                    class="mr-3"
+                    type="blue"
+                    v-if="!profile"
+                    @click="logInModalOpen = true">Log In</app-button>
+                <app-button
+                    class="mr-3"
+                    type="pink"
+                    v-if="!profile"
+                    @click="signUpModalOpen = true">Sign Up</app-button>
+                <span class="mr-5" v-if="profile">Welcome back, <nuxt-link to="/profile" tag="a">{{ displayName }}</nuxt-link>.</span>
             </div>
         </nav>
 
@@ -111,7 +123,7 @@ import Button from '~/components/Button.vue';
 import SignUpModal from '~/components/SignUpModal.vue';
 import LogInModal from '~/components/LogInModal.vue';
 
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
     components: {
@@ -125,22 +137,27 @@ export default {
                 {
                     label: 'Home',
                     link: '/',
+                    shouldShow: () => true,
                 },
                 {
                     label: 'Leaderboards',
                     link: '/leaderboards',
+                    shouldShow: () => true,
                 },
                 {
                     label: 'Games',
                     link: '/games',
+                    shouldShow: () => true,
                 },
                 {
                     label: 'Profile',
                     link: '/profile',
+                    shouldShow: () => this.profile,
                 },
                 {
                     label: 'Achievements',
                     link: '/achievements',
+                    shouldShow: () => this.profile,
                 },
             ],
             logInModalOpen: false,
@@ -151,8 +168,11 @@ export default {
         ...mapState('user', [
             'profile',
         ]),
-        userEmailPrefix() {
-            return this.profile ? this.profile.email.slice(0, this.profile.email.indexOf('@')) : '[ no email ]';
+        ...mapGetters('user', [
+            'displayName',
+        ]),
+        visiblePages() {
+            return this.pages.filter((page) => page.shouldShow());
         },
     },
     methods: {

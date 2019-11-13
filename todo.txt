@@ -1,7 +1,5 @@
 - profile/profile editing
-    - make profile page
     - add elements for
-        - username
         - achievements
         - leaderboard rankings
         - stats
@@ -15,6 +13,8 @@
         - username
     - implement change password
     - implement delete account
+
+- add username to sign up process
     
 - referal system
     - add referal ID input to sign up form
