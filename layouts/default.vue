@@ -201,7 +201,7 @@ export default {
                     });
             });
         },
-        sendSignUpRequest({ email, password }) {
+        sendSignUpRequest({ email, password, displayName }) {
             return new Promise((resolve, reject) => {
                 this.$auth()
                     .createUserWithEmailAndPassword(email, password)
@@ -219,6 +219,7 @@ export default {
                                 email: user.email,
                                 tests: [],
                                 experiencePoints: 0,
+                                displayName,
                             });
                     })
                     .catch((error) => {

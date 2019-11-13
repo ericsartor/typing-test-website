@@ -1,7 +1,11 @@
 export const state = () => ({
     /*
         {
-
+            email: string
+            experiencePoints: number
+            displayName: string
+            tests: Test[] || undefined
+            uid: string
         }
     */
     profile: null,

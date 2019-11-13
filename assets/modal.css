@@ -1,10 +1,19 @@
-.modal {
-    --width: 30vw;
+.modal-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
     position: fixed;
-    top:300px;
-    width: var(--width);
-    left: calc((100vw - var(--width)) / 2);
+    top: 0;
+    left: 0;
     z-index: 1;
+}
+
+.modal {
+    width: 30vw;
+    min-width: 600px;
     background-color: #F7F7FF;
     color: #070600;
     border: 1px solid #070600;

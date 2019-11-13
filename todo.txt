@@ -13,8 +13,6 @@
         - username
     - implement change password
     - implement delete account
-
-- add username to sign up process
     
 - referal system
     - add referal ID input to sign up form
