@@ -1,12 +1,11 @@
-export default {
+export class Achievements {
     // find all the achievements the user has currently fulfilled
     discover(tests) {
         if (!tests) throw Error('Achievements.discover() requires tests[] as the first prop.');
 
         return this.achievements
-            .filter((achievement) => achievement.isFulfilled.bind(this)(tests))
-            .map((achievement) => achievement.label);
-    },
+            .filter((achievement) => achievement.isFulfilled.bind(this)(tests));
+    }
 
     // find all the achievements the user has fulfilled other than the ones they already completed
     discoverNew(tests, currentAchievements) {
@@ -17,353 +16,372 @@ export default {
 
         return this.discover(tests)
             .filter((achievementLabel) => !currentAchievements.includes(achievementLabel));
-    },
+    }
 
-    // used to determine achievement fulfillments and display progress towards achievements
-    helpers: {
-        // the highest number of tests completed within the given timeframe
-        testsWithinTimeFrame(tests, timeframeInHours) {
-            const timeframeInMilliseconds = timeframeInHours * 60 * 1000;
+    /**
+     * HELPERS
+     */
 
-            // sort from oldest to newest
-            tests = [ ...tests ].sort((testA, testB) => testB.timestamp - testA.timestamp);
+    // the highest number of tests completed within the given timeframe
+    testsWithinTimeFrame(tests, timeframeInHours) {
+        const timeframeInMilliseconds = timeframeInHours * 60 * 1000;
 
-            // this gets flipped when any of the loops reaches the final test succesfully
-            let reachedEndOfTests = false;
+        // sort from oldest to newest
+        tests = [ ...tests ].sort((testA, testB) => testB.timestamp - testA.timestamp);
 
-            // if this test gets reached in any of the loops, then it's the longest streak
-            const mostRecentTest = tests[tests.length - 1];
+        // this gets flipped when any of the loops reaches the final test succesfully
+        let reachedEndOfTests = false;
 
-            // track the highest streak of test within the timeframe
-            let highestNumWithinTimeframe = 1;
+        // if this test gets reached in any of the loops, then it's the longest streak
+        const mostRecentTest = tests[tests.length - 1];
 
-            // create a slice of the tests array from each test to the end of the array
-            tests.some((anchorTest, i) => {
-                // create a slice from the current test to the end
-                const slice = tests.slice(i + 1);
+        // track the highest streak of test within the timeframe
+        let highestNumWithinTimeframe = 1;
 
-                // count how many tests were done within the timeframe relative to the anchorTest
-                let numWithinTimeFrame = 1;
-                slice.some((test) => {
-                    if (test.timeframe - anchorTest.timeframe < timeframeInMilliseconds) {
-                        // within time frame, increment the counter
-                        numWithinTimeFrame++;
-                        highestNumWithinTimeframe = Math.max(numWithinTimeFrame, highestNumWithinTimeframe);
-                    } else {
-                        // outside timeframe, leave the some() loop
-                        return true;
-                    }
+        // create a slice of the tests array from each test to the end of the array
+        tests.some((anchorTest, i) => {
+            // create a slice from the current test to the end
+            const slice = tests.slice(i + 1);
 
-                    // if the most recent test was reached, we've found the longest streak
-                    if (test === mostRecentTest) {
-                        reachedEndOfTests = true;
-                        return true;
-                    }
-                });
-
-                // leave the some() loop if one of the above loops reached the mostRecentTest
-                return reachedEndOfTests;
-            });
-
-            return highestNumWithinTimeframe;
-        },
-
-        // the highest number of consecutive days tests were completed on
-        numOfConsecutiveDaysWithCompletedTests(tests) {
-            let previousDay = '';
-            return tests.reduce((numOfDays, test) => {
-                const date = new Date();
-                const day = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`;
-
-                if (day !== previousDay) {
-                    previousDay = day;
-                    return numOfDays + 1;
+            // count how many tests were done within the timeframe relative to the anchorTest
+            let numWithinTimeFrame = 1;
+            slice.some((test) => {
+                if (test.timeframe - anchorTest.timeframe < timeframeInMilliseconds) {
+                    // within time frame, increment the counter
+                    numWithinTimeFrame++;
+                    highestNumWithinTimeframe = Math.max(numWithinTimeFrame, highestNumWithinTimeframe);
                 } else {
-                    return numOfDays;
+                    // outside timeframe, leave the some() loop
+                    return true;
                 }
-            }, 0);
-        },
 
-        // the highest number of consecutive tests completed with 100% accuracy
-        consecutivePerfectTests(tests) {
-            // sort from oldest to newest
-            tests = [ ...tests ].sort((testA, testB) => testB.timestamp - testA.timestamp);
-
-            // track the highest streak of test within the timeframe
-            let highestNumConsecutive = 1;
-
-            // find the largest streak of perfect tests
-            let counter = 0;
-            tests.forEach((test) => {
-                const testIsPerfect = test.accuracy === 100;
-                counter += testIsPerfect;
-
-                if (testIsPerfect) {
-                    highestNumConsecutive = Math.max(counter, highestNumConsecutive);
-                } else {
-                    counter = 0;
+                // if the most recent test was reached, we've found the longest streak
+                if (test === mostRecentTest) {
+                    reachedEndOfTests = true;
+                    return true;
                 }
             });
 
-            return highestNumConsecutive;
-        },
+            // leave the some() loop if one of the above loops reached the mostRecentTest
+            return reachedEndOfTests;
+        });
 
-        // the number of completed tests with 100% accuracy overall
-        totalPerfectTests(tests) {
-            return tests.reduce((acc, test) => {
-                return acc + (test.accuracy === 100);
-            }, 0);
-        },
-    },
+        return highestNumWithinTimeframe;
+    }
 
-    /* TODO: add an experience points value to each achievement */
-    achievements: [
+    // the highest number of consecutive days tests were completed on
+    numOfConsecutiveDaysWithCompletedTests(tests) {
+        let previousDay = '';
+        return tests.reduce((numOfDays, test) => {
+            const date = new Date();
+            const day = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`;
+
+            if (day !== previousDay) {
+                previousDay = day;
+                return numOfDays + 1;
+            } else {
+                return numOfDays;
+            }
+        }, 0);
+    }
+
+    // the highest number of consecutive tests completed with 100% accuracy
+    consecutivePerfectTests(tests) {
+        // sort from oldest to newest
+        tests = [ ...tests ].sort((testA, testB) => testB.timestamp - testA.timestamp);
+
+        // track the highest streak of test within the timeframe
+        let highestNumConsecutive = 1;
+
+        // find the largest streak of perfect tests
+        let counter = 0;
+        tests.forEach((test) => {
+            const testIsPerfect = test.accuracy === 100;
+            counter += testIsPerfect;
+
+            if (testIsPerfect) {
+                highestNumConsecutive = Math.max(counter, highestNumConsecutive);
+            } else {
+                counter = 0;
+            }
+        });
+
+        return highestNumConsecutive;
+    }
+
+    // the number of completed tests with 100% accuracy overall
+    totalPerfectTests(tests) {
+        return tests.reduce((acc, test) => {
+            return acc + (test.accuracy === 100);
+        }, 0);
+    }
+
+    constructor() {
+        /* TODO: add an experience points value to each achievement */
+        this.achievements = [
             // number of completed tests overall
-        {
-            label: 'Welcome!',
-            description: 'Complete your first test.',
-            isFulfilled: function(tests) {
-                return tests.length >= 1;
-            },
-        },
-        {
-            label: 'Practice Makes Perfect',
-            description: 'Complete 25 total tests.',
-            isFulfilled: function(tests) {
-                console.log(tests.length);
-                return tests.length >= 25;
-            },
-        },
-        {
-            label: 'Addicted',
-            description: 'Complete 100 total tests.',
-            isFulfilled: function(tests) {
-                return tests.length >= 100;
-            },
-        },
+            {
+                label: 'Welcome!',
+                description: 'Complete your first test.',
+                isFulfilled: (tests) => {
+                    return tests.length >= 1;
+                },
+                getProgress: (tests) => {
+                    const progress = Math.min(tests.length, 1);
 
-            // number of completed tests within 24 hours
-        {
-            label: 'Daily Dose',
-            description: 'Complete 10 tests within 24 hours',
-            isFulfilled: function(tests) {
-                return this.helpers.testsWithinTimeFrame(tests, 24) >= 10;
-            }
-        },
-        {
-            label: 'Time To Kill',
-            description: 'Complete 50 tests within 24 hours',
-            isFulfilled: function(tests) {
-                return this.helpers.testsWithinTimeFrame(tests, 24) >= 50;
-            }
-        },
-        {
-            label: 'More...MORE!',
-            description: 'Complete 100 tests within 24 hours',
-            isFulfilled: function(tests) {
-                return this.helpers.testsWithinTimeFrame(tests, 24) >= 100;
-            }
-        },
+                    return {
+                        percent: (progress / 1) * 100,
+                        label: `${progress} / 1`,
+                    }
+                },
+            },
+            {
+                label: 'Practice Makes Perfect',
+                description: 'Complete 25 total tests.',
+                isFulfilled: (tests) => {
+                    console.log(tests.length);
+                    return tests.length >= 25;
+                },
+                getProgress: (tests) => {
+                    const progress = Math.min(tests.length, 25);
+
+                    return {
+                        percent: (progress / 25) * 100,
+                        label: `${progress} / 25`,
+                    }
+                },
+            },
+            {
+                label: 'Addicted',
+                description: 'Complete 100 total tests.',
+                isFulfilled: (tests) => {
+                    return tests.length >= 100;
+                },
+            },
+
+                // number of completed tests within 24 hours
+            {
+                label: 'Daily Dose',
+                description: 'Complete 10 tests within 24 hours',
+                isFulfilled: (tests) => {
+                    return this.testsWithinTimeFrame(tests, 24) >= 10;
+                }
+            },
+            {
+                label: 'Time To Kill',
+                description: 'Complete 50 tests within 24 hours',
+                isFulfilled: (tests) => {
+                    return this.testsWithinTimeFrame(tests, 24) >= 50;
+                }
+            },
+            {
+                label: 'More...MORE!',
+                description: 'Complete 100 tests within 24 hours',
+                isFulfilled: (tests) => {
+                    return this.testsWithinTimeFrame(tests, 24) >= 100;
+                }
+            },
 
 
-            // number of completed tests on consecutive days
-        {
-            label: 'Back For More',
-            description: 'Complete a test on two consecutive days.',
-            isFulfilled: function(tests) {
-                return this.helpers.numOfConsecutiveDaysWithCompletedTests(tests) >= 2;
+                // number of completed tests on consecutive days
+            {
+                label: 'Back For More',
+                description: 'Complete a test on two consecutive days.',
+                isFulfilled: (tests) => {
+                    return this.numOfConsecutiveDaysWithCompletedTests(tests) >= 2;
+                },
             },
-        },
-        {
-            label: 'I\'m A Regular',
-            description: 'Complete a test on seven consecutive days.',
-            isFulfilled: function(tests) {
-                return this.helpers.numOfConsecutiveDaysWithCompletedTests(tests) >= 7;
+            {
+                label: 'I\'m A Regular',
+                description: 'Complete a test on seven consecutive days.',
+                isFulfilled: (tests) => {
+                    return this.numOfConsecutiveDaysWithCompletedTests(tests) >= 7;
+                },
             },
-        },
-        {
-            label: 'Dedicated',
-            description: 'Complete a test on 30 consecutive days.',
-            isFulfilled: function(tests) {
-                return this.helpers.numOfConsecutiveDaysWithCompletedTests(tests) >= 30;
+            {
+                label: 'Dedicated',
+                description: 'Complete a test on 30 consecutive days.',
+                isFulfilled: (tests) => {
+                    return this.numOfConsecutiveDaysWithCompletedTests(tests) >= 30;
+                },
             },
-        },
-        {
-            label: 'Lifer',
-            description: 'Complete a test on 180 consecutive days.',
-            isFulfilled: function(tests) {
-                return this.helpers.numOfConsecutiveDaysWithCompletedTests(tests) >= 180;
+            {
+                label: 'Lifer',
+                description: 'Complete a test on 180 consecutive days.',
+                isFulfilled: (tests) => {
+                    return this.numOfConsecutiveDaysWithCompletedTests(tests) >= 180;
+                },
             },
-        },
-        {
-            label: 'No-Lifer',
-            description: 'Complete a test on 365 consecutive days.',
-            isFulfilled: function(tests) {
-                return this.helpers.numOfConsecutiveDaysWithCompletedTests(tests) >= 365;
+            {
+                label: 'No-Lifer',
+                description: 'Complete a test on 365 consecutive days.',
+                isFulfilled: (tests) => {
+                    return this.numOfConsecutiveDaysWithCompletedTests(tests) >= 365;
+                },
             },
-        },
 
-            // number of completed test with 100% accuracy in a row
-        {
-            label: 'Attention To Detail',
-            description: 'Complete three consecutive tests with 100% accuracy.',
-            isFulfilled: function(tests) {
-                return this.helpers.consecutivePerfectTests(tests) >= 3;
+                // number of completed test with 100% accuracy in a row
+            {
+                label: 'Attention To Detail',
+                description: 'Complete three consecutive tests with 100% accuracy.',
+                isFulfilled: (tests) => {
+                    return this.consecutivePerfectTests(tests) >= 3;
+                },
             },
-        },
-        {
-            label: 'I\'m On A Roll',
-            description: 'Complete 10 consecutive tests with 100% accuracy.',
-            isFulfilled: function(tests) {
-                return this.helpers.consecutivePerfectTests(tests) >= 10;
+            {
+                label: 'I\'m On A Roll',
+                description: 'Complete 10 consecutive tests with 100% accuracy.',
+                isFulfilled: (tests) => {
+                    return this.consecutivePerfectTests(tests) >= 10;
+                },
             },
-        },
-        {
-            label: 'Sharpshooter',
-            description: 'Complete 20 consecutive tests with 100% accuracy.',
-            isFulfilled: function(tests) {
-                return this.helpers.consecutivePerfectTests(tests) >= 10;
+            {
+                label: 'Sharpshooter',
+                description: 'Complete 20 consecutive tests with 100% accuracy.',
+                isFulfilled: (tests) => {
+                    return this.consecutivePerfectTests(tests) >= 10;
+                },
             },
-        },
-        {
-            label: 'Aimbot',
-            description: 'Complete 50 consecutive tests with 100% accuracy.',
-            isFulfilled: function(tests) {
-                return this.helpers.consecutivePerfectTests(tests) >= 50;
+            {
+                label: 'Aimbot',
+                description: 'Complete 50 consecutive tests with 100% accuracy.',
+                isFulfilled: (tests) => {
+                    return this.consecutivePerfectTests(tests) >= 50;
+                },
             },
-        },
 
-            // number of completed test with 100% accuracy overall
-        {
-            label: 'Perfect!',
-            description: 'Complete a test with 100% accuracy.',
-            svg: 'perfect',
-            isFulfilled: function(tests) {
-                return this.helpers.totalPerfectTests(tests) >= 1;
-            },
-            getProgress(tests) {
-                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+                // number of completed test with 100% accuracy overall
+            {
+                label: 'Perfect!',
+                description: 'Complete a test with 100% accuracy.',
+                svg: 'perfect',
+                isFulfilled: (tests) => {
+                    return this.totalPerfectTests(tests) >= 1;
+                },
+                getProgress: (tests) => {
+                    const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
 
-                const progress = Math.min(perfectTests, 1);
-                
-                return {
-                    label: `${progress} / 1`,
-                    percent: progress / 1 * 100,
-                };
+                    const progress = Math.min(perfectTests, 1);
+                    
+                    return {
+                        label: `${progress} / 1`,
+                        percent: progress / 1 * 100,
+                    };
+                },
             },
-        },
-        {
-            label: 'Accuracy I',
-            description: 'Complete 10 tests with 100% accuracy.',
-            svg: 'accuracy1',
-            isFulfilled: function(tests) {
-                return this.helpers.totalPerfectTests(tests) >= 10;
-            },
-            getProgress(tests) {
-                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+            {
+                label: 'Accuracy I',
+                description: 'Complete 10 tests with 100% accuracy.',
+                svg: 'accuracy1',
+                isFulfilled: (tests) => {
+                    return this.totalPerfectTests(tests) >= 10;
+                },
+                getProgress: (tests) => {
+                    const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
 
-                const progress = Math.min(perfectTests, 10);
-                
-                return {
-                    label: `${progress} / 10`,
-                    percent: progress / 10 * 100,
-                };
+                    const progress = Math.min(perfectTests, 10);
+                    
+                    return {
+                        label: `${progress} / 10`,
+                        percent: progress / 10 * 100,
+                    };
+                },
             },
-        },
-        {
-            label: 'Accuracy II',
-            description: 'Complete 50 tests with 100% accuracy.',
-            svg: 'accuracy2',
-            isFulfilled: function(tests) {
-                return this.helpers.totalPerfectTests(tests) >= 50;
-            },
-            getProgress(tests) {
-                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+            {
+                label: 'Accuracy II',
+                description: 'Complete 50 tests with 100% accuracy.',
+                svg: 'accuracy2',
+                isFulfilled: (tests) => {
+                    return this.totalPerfectTests(tests) >= 50;
+                },
+                getProgress: (tests) => {
+                    const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
 
-                const progress = Math.min(perfectTests, 50);
-                
-                return {
-                    label: `${progress} / 50`,
-                    percent: progress / 50 * 100,
-                };
+                    const progress = Math.min(perfectTests, 50);
+                    
+                    return {
+                        label: `${progress} / 50`,
+                        percent: progress / 50 * 100,
+                    };
+                },
             },
-        },
-        {
-            label: 'Accuracy III',
-            description: 'Complete 100 tests with 100% accuracy.',
-            svg: 'accuracy3',
-            isFulfilled: function(tests) {
-                return this.helpers.totalPerfectTests(tests) >= 100;
-            },
-            getProgress(tests) {
-                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+            {
+                label: 'Accuracy III',
+                description: 'Complete 100 tests with 100% accuracy.',
+                svg: 'accuracy3',
+                isFulfilled: (tests) => {
+                    return this.totalPerfectTests(tests) >= 100;
+                },
+                getProgress: (tests) => {
+                    const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
 
-                const progress = Math.min(perfectTests, 100);
-                
-                return {
-                    label: `${progress} / 100`,
-                    percent: progress / 100 * 100,
-                };
+                    const progress = Math.min(perfectTests, 100);
+                    
+                    return {
+                        label: `${progress} / 100`,
+                        percent: progress / 100 * 100,
+                    };
+                },
             },
-        },
-        {
-            label: 'Accuracy IV',
-            description: 'Complete 500 tests with 100% accuracy.',
-            svg: 'accuracy4',
-            isFulfilled: function(tests) {
-                return this.helpers.totalPerfectTests(tests) >= 500;
-            },
-            getProgress(tests) {
-                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+            {
+                label: 'Accuracy IV',
+                description: 'Complete 500 tests with 100% accuracy.',
+                svg: 'accuracy4',
+                isFulfilled: (tests) => {
+                    return this.totalPerfectTests(tests) >= 500;
+                },
+                getProgress: (tests) => {
+                    const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
 
-                const progress = Math.min(perfectTests, 500);
-                
-                return {
-                    label: `${progress} / 500`,
-                    percent: progress / 500 * 100,
-                };
+                    const progress = Math.min(perfectTests, 500);
+                    
+                    return {
+                        label: `${progress} / 500`,
+                        percent: progress / 500 * 100,
+                    };
+                },
             },
-        },
-        {
-            label: 'Accuracy V',
-            description: 'Complete 1000 tests with 100% accuracy.',
-            svg: 'accuracy5',
-            isFulfilled: function(tests) {
-                return this.helpers.totalPerfectTests(tests) >= 1000;
-            },
-            getProgress(tests) {
-                const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
+            {
+                label: 'Accuracy V',
+                description: 'Complete 1000 tests with 100% accuracy.',
+                svg: 'accuracy5',
+                isFulfilled: (tests) => {
+                    return this.totalPerfectTests(tests) >= 1000;
+                },
+                getProgress: (tests) => {
+                    const perfectTests = tests.reduce((count, test) => count + (test.accuracy === 100), 0);
 
-                const progress = Math.min(perfectTests, 1000);
-                
-                return {
-                    label: `${progress} / 1000`,
-                    percent: progress / 1000 * 100,
-                };
+                    const progress = Math.min(perfectTests, 1000);
+                    
+                    return {
+                        label: `${progress} / 1000`,
+                        percent: progress / 1000 * 100,
+                    };
+                },
             },
-        },
 
-            // word of mouth marketing
-        {
-            label: 'Check This Out!',
-            description: 'Share the website on any social media platform.',
-            isFulfilled: function(tests) {
-                return false;
+                // word of mouth marketing
+            {
+                label: 'Check This Out!',
+                description: 'Share the website on any social media platform.',
+                isFulfilled: (tests) => {
+                    return false;
+                },
             },
-        },
-        {
-            label: 'Team Player',
-            description: 'Be credited as a referal during a sign up.',
-            isFulfilled: function(tests) {
-                return false;
+            {
+                label: 'Team Player',
+                description: 'Be credited as a referal during a sign up.',
+                isFulfilled: (tests) => {
+                    return false;
+                },
             },
-        },
-        {
-            label: 'Recruiter',
-            description: 'Be credited as a referal during 10 sign ups.',
-            isFulfilled: function(tests) {
-                return false;
+            {
+                label: 'Recruiter',
+                description: 'Be credited as a referal during 10 sign ups.',
+                isFulfilled: (tests) => {
+                    return false;
+                },
             },
-        },
-    ],
-};
+        ]
+    }
+}

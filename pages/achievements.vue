@@ -22,7 +22,8 @@
 </style>
 
 <script>
-import Achievements from '../js/achievements';
+import { Achievements} from '../js/achievements';
+const achievements = new Achievements();
 
 import Achievement from '~/components/Achievement.vue';
 
@@ -32,7 +33,7 @@ export default {
     },
     data() {
         return {
-            achievements: { ...Achievements },
+            achievements: achievements,
         };
     },
 }

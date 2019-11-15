@@ -1,5 +1,5 @@
 <template>
-    <div class="achievement" :style="{ width: size === 'full' ? '33.3%' : '80px' }">
+    <div class="achievement" :class="{ icon: size === 'icon' }">
         <template v-if="size === 'full'">
             <img :src="imageSource">
             <div class="achievement-text">
@@ -46,6 +46,13 @@
     margin: 10px 0;
     padding: 0 5px;
     position: relative;
+    height: 80px;
+    width: 33.3%;
+}
+
+.icon {
+    width: 80px;
+    padding: 0;
 }
 
 .achievement img {
@@ -89,8 +96,13 @@
     top: 0;
     left: 0;
     background-color: green;
-    z-index: -1;
+    z-index: 0;
     height: 13px;
+}
+
+.progress-text {
+    position: relative;
+    z-index: 1;
 }
 
 .hover-info {
@@ -102,6 +114,7 @@
     display: none;
     background: white;
     z-index: 1;
+    box-shadow: 0 0 5px black;
 }
 .hover-info.show {
     display: block;

@@ -18,7 +18,8 @@ button {
 
 .blue {
     background-color: #3DC2F7;
-    color: #F7F7FF;
+    /* color: #F7F7FF; */
+    color: white;
 }
 
 .blue:hover {
@@ -27,7 +28,8 @@ button {
 
 .pink {
     background-color: #EA526F;
-    color: #F7F7FF;
+    /* color: #F7F7FF; */
+    color: white;
 }
 .pink:hover {
     background-color: rgb(190, 67, 89);

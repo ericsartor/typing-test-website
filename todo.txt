@@ -13,6 +13,12 @@
         - username
     - implement change password
     - implement delete account
+
+- achievement discovery system should report achievements to server
+
+- should check for new achievements after
+    - tests
+    - logins
     
 - referal system
     - add referal ID input to sign up form
@@ -26,7 +32,7 @@
 - more achievements
     - referal achievements
     - social media achievements
-    
+
 - progress indicators
     - badges for improvement
     - leaderboards for improvement
