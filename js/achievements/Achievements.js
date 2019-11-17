@@ -1,4 +1,5 @@
 import achievementSets from './achievementSets';
+import AchievementWithProgress from './AchievementWithProgress';
 
 export default class Achievements {
 
@@ -7,28 +8,41 @@ export default class Achievements {
         // receive the logged in user's profile
         this.profile = profile;
 
-        // get the achievements the logged in user has already completed
-        this.completedAchievements = this.profile.achievements
-            .map((userAchievement) => {
-                const setContainingAchievement = achievementSets
-                    .find((achievementSet) => achievementSet.names.includes(userAchievement.name));
+        this.completedAchievements = [];
 
-                const achievementIndex = setContainingAchievement.names.indexOf(userAchievement.name);
+        // get the achievements the logged in user has already completed
+        // this.completedAchievements = this.profile.achievements
+        //     .map((userAchievement) => {
+        //         const setContainingAchievement = achievementSets
+        //             .find((achievementSet) => achievementSet.names.includes(userAchievement.name));
+
+        //         const achievementIndex = setContainingAchievement.names.indexOf(userAchievement.name);
                 
-                return setContainingAchievement.achievements[achievementIndex];
-            });
+        //         const achievement = setContainingAchievement.achievements[achievementIndex];
+
+        //         return new AchievementWithProgress({
+        //             achievement: achievement,
+        //             isFulfilled: true,
+        //             progress: 1,
+        //             qualifier: 1,
+        //         });
+        //     });
 
         // create the non-completed achievement list
-        this.remainingAchievementSets = achievementSets
-            .map((achievementSet) => {
-                achievementSet.names
-                    .map(((name, i) => this.completedAchievements.includes(name) ? i : false))
-                    .filter((index) => index !== false)
-                    .reverse()
-                    .forEach((index) => this.removeAchievementFromSet(achievementSet, index));
+        this.remainingAchievementSets = achievementSets;
+            // .map((achievementSet) => {
+            //     achievementSet.names
+            //         .map((name, i) => {
+            //             this.completedAchievements.find((achievementWithProgress) => {
+            //                 return achievementWithProgress.achievement.name === name;
+            //             }) ? i : false;
+            //         })
+            //         .filter((index) => index !== false)
+            //         .reverse()
+            //         .forEach((index) => this.removeAchievementFromSet(achievementSet, index));
 
-                return achievementSet;
-            });
+            //     return achievementSet;
+            // });
 
         this.checkForCompletedAchievements(this.profile.tests);
     }
@@ -52,7 +66,7 @@ export default class Achievements {
                         const removeIndex = remainingAchievementSet.names.indexOf(achievement.name);
                         this.removeAchievementFromSet(remainingAchievementSet, removeIndex);
 
-                        return achievement;
+                        return achievementWithProgress;
                     });
             })
             .flat(Infinity);
@@ -85,5 +99,9 @@ export default class Achievements {
 
                 return progressB - progressA;
             });
+    }
+
+    get allAchievements() {
+        return [ ...this.incompleteAchievementsByProgress, ...this.completedAchievements ];
     }
 }

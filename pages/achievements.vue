@@ -1,9 +1,10 @@
 <template>
-    <div>
+    <div v-if="achievements">
         <div class="achievements">
+            {{ log() }}
             <app-achievement
-                v-for="achievement in achievements.achievements"
-                :key="achievement.label"
+                v-for="achievement in achievements.allAchievements"
+                :key="achievement.achievement.name"
                 :achievement="achievement"
                 size="full" />
         </div>
@@ -25,14 +26,21 @@
 
 import Achievement from '~/components/Achievement.vue';
 
+import { mapState } from 'vuex';
+
 export default {
     components: {
         'app-achievement': Achievement,
     },
-    data() {
-        return {
-            achievements: achievements,
-        };
+    computed: {
+        ...mapState('user', [
+            'achievements',
+        ]),
     },
+    methods: {
+        log() {
+            console.log(this.achievements.allAchievements);
+        }
+    }
 }
 </script>
