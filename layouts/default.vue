@@ -250,16 +250,25 @@ export default {
                             // set the user locally, then update the database after folding in any
                             // temporary tests that were completed before logging in
                             this.setUser({
-                                user: {
+                                profile: {
                                     uid: user.uid, 
                                     email,
                                     tests: tests || [],
                                     experiencePoints: experiencePoints || 0,
                                     achievements: achievements || [],
                                 },
-                                updateUserFunc: (userUpdate) => {
-                                    this.$db().ref('/users/' + user.uid).set(userUpdate);
-                                }
+                                onAchievementCompleted(achievement) {
+                                    this.$db().ref('/users/' + user.uid).set({
+                                        ...this.profile,
+                                        tests: [
+                                            ...this.profile.achievements,
+                                            {
+                                                name: achievement.name,
+                                                timestamp: Date.now(),
+                                            },
+                                        ],
+                                    });
+                                },
                             });
                         }
                     });

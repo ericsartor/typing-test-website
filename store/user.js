@@ -1,3 +1,6 @@
+import Achievements from '../js/achievements/Achievements';
+import Vue from 'vue';
+
 export const state = () => ({
     /*
         {
@@ -9,6 +12,7 @@ export const state = () => ({
         }
     */
     profile: null,
+    achievements: null,
     tests: [], // these are the tests that are done while the user is not logged in
 });
 
@@ -31,8 +35,8 @@ export const getters = {
 export const mutations = {
     // when a user logs in, log their details in the store and
     // merge any completed tests into their tests array (locally)
-    setUser(state, { user, updateUserFunc }) {
-        state.profile = user;
+    setUser(state, { profile }) {
+        state.profile = profile;
 
         // move the temporary tests into the user's account
         if (state.tests.length) {
@@ -40,11 +44,15 @@ export const mutations = {
             state.tests = [];
         }
 
-        updateUserFunc(state.profile);
+        // update user in Firebase
+        Vue.prototype.$db().ref('/users/' + state.profile.uid).set(state.profile);
+
+        state.achievements = new Achievements({ profile: state.profile });
     },
 
     clearUser(state) {
         state.profile = null;
+        state.achievements = null;
     },
 
     // push to either the temp test array if user is not logged in, or the user's test array

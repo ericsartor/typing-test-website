@@ -3,16 +3,20 @@ import achievementSets from './achievementSets';
 export default class Achievements {
 
     // { profile: UserProfile, onAchievementCompleted: (achievement: Achievement) => void }
-    constructor(props) {
+    constructor({ profile }) {
         // receive the logged in user's profile
-        this.profile = props.profile;
-
-        // this will get triggered when an achievement has been completed
-        this.onAchievementCompleted = props.onAchievementCompleted;
+        this.profile = profile;
 
         // get the achievements the logged in user has already completed
-        this.completedAchievementNames = this.profile.achievements
-            .map((achievement) => achievement.name);
+        this.completedAchievements = this.profile.achievements
+            .map((userAchievement) => {
+                const setContainingAchievement = achievementSets
+                    .find((achievementSet) => achievementSet.names.includes(userAchievement.name));
+
+                const achievementIndex = setContainingAchievement.names.indexOf(userAchievement.name);
+                
+                return setContainingAchievement.achievements[achievementIndex];
+            });
 
         // create the non-completed achievement list
         this.remainingAchievementSets = achievementSets
@@ -21,10 +25,12 @@ export default class Achievements {
                     .map(((name, i) => this.completedAchievements.includes(name) ? i : false))
                     .filter((index) => index !== false)
                     .reverse()
-                    forEach((index) => this.removeAchievementFromSet(achievementSet, index));
+                    .forEach((index) => this.removeAchievementFromSet(achievementSet, index));
 
                 return achievementSet;
             });
+
+        this.checkForCompletedAchievements(this.profile.tests);
     }
 
     removeAchievementFromSet(set, index) {
@@ -40,10 +46,11 @@ export default class Achievements {
             .map((remainingAchievementSet) => {
                 return remainingAchievementSet
                     .getAchievementsWithProgress(this.profile.tests)
-                    .filter((achievement) => achievement.isFulfilled)
-                    .map((achievement) => {
-                        const set = remainingAchievementSet;
-                        this.removeAchievementFromSet(set, set.names.indexOf(achievement.name));
+                    .filter((achievementWithProgress) => achievementWithProgress.isFulfilled)
+                    .map((achievementWithProgress) => {
+                        const { achievement } = achievementWithProgress;
+                        const removeIndex = remainingAchievementSet.names.indexOf(achievement.name);
+                        this.removeAchievementFromSet(remainingAchievementSet, removeIndex);
 
                         return achievement;
                     });
@@ -58,13 +65,25 @@ export default class Achievements {
             .forEach((index) => this.remainingAchievementSets.splice(index, 1));
         
         newlyCompletedAchievements.forEach((achievement) => {
-            // this function should handle updating the user's profile on the server
-            this.onAchievementCompleted(achievement);
-
             // move the achievement from remaining to completed
-            this.completedAchievementNames.push(achievement);
+            this.completedAchievements.push(achievement);
         });
 
         return newlyCompletedAchievements;
+    }
+
+    get incompleteAchievementsByProgress() {
+        return this.remainingAchievementSets
+            .map((achievementSet) => achievementSet.getAchievementsWithProgress(this.profile.tests))
+            .flat(Infinity)
+            // .filter((achievementWithProgress) => {
+            //     return !achievementWithProgress.isFulfilled;
+            // })
+            .sort((achievementA, achievementB) => {
+                const progressA = achievementA.progress / achievementA.qualifier;
+                const progressB = achievementB.progress / achievementB.qualifier;
+
+                return progressB - progressA;
+            });
     }
 }

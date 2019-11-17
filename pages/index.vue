@@ -28,8 +28,6 @@ import Chart from '~/components/Chart.vue';
 
 import { mapState, mapGetters, mapMutations } from 'vuex';
 
-import Achievements from '../js/achievements';
-
 export default {
     components: {
         'app-typing-test': TypingTest,

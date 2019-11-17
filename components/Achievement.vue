@@ -1,37 +1,41 @@
 <template>
     <div class="achievement" :class="{ icon: size === 'icon' }">
+
+        <!-- full template -->
         <template v-if="size === 'full'">
             <img :src="imageSource">
             <div class="achievement-text">
-                <span class="achievement-label">{{ achievement.label }}</span>
-                <p class="achievement-description">{{ achievement.description }}</p>
-                <div class="progress-bar">
-                    <template v-if="achievement.getProgress">
-                        <div
-                            class="bar"
-                            :style="{ width: achievement.getProgress(tests).percent + '%' }" />
-                        <p class="progress-text">
-                            {{ achievement.getProgress(tests).label }}
-                        </p>
-                    </template>
+                <span class="achievement-label">{{ name }}</span>
+                <p class="achievement-description">{{ description }}</p>
+                <div class="progress-bar" v-if="!isFulfilled">
+                    <div
+                        class="bar"
+                        :style="{ width: progressPercent + '%' }" />
+                    <p class="progress-text">
+                        {{ progressLabel }}
+                    </p>
                 </div>
             </div>
         </template>
+
+        <!-- icon template -->
         <template v-if="size === 'icon'">
+
+            <!-- icon -->
             <img :src="imageSource" @mouseenter="handleIconHover" @mouseleave="handleIconLeave">
+            
+            <!-- hover info card -->
             <div class="hover-info" :class="{ show: displayInfo }">
                 <div class="achievement-text">
-                    <span class="achievement-label">{{ achievement.label }}</span>
-                    <p class="achievement-description">{{ achievement.description }}</p>
-                    <div class="progress-bar">
-                        <template v-if="achievement.getProgress">
-                            <div
-                                class="bar"
-                                :style="{ width: achievement.getProgress(tests).percent + '%' }" />
-                            <p class="progress-text">
-                                {{ achievement.getProgress(tests).label }}
-                            </p>
-                        </template>
+                    <span class="achievement-label">{{ name }}</span>
+                    <p class="achievement-description">{{ description }}</p>
+                    <div class="progress-bar" v-if="!isFulfilled">
+                        <div
+                            class="bar"
+                            :style="{ width: progressPercent + '%' }" />
+                        <p class="progress-text">
+                            {{ progressLabel }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -122,8 +126,6 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
     props: {
         achievement: {
@@ -141,12 +143,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('user', [
-            'tests',
-        ]),
         imageSource() {
-            return this.achievement.svg ? `/svg/${this.achievement.svg}.svg` : '';
+            return this.svg ? `/svg/${this.svg}.svg` : '';
         },
+        progressPercent() {
+            const progress = Math.min(this.progress, this.qualifier);
+
+            return progress / this.qualifier * 100;
+        }
     },
     methods: {
         handleIconHover() {
@@ -155,6 +159,18 @@ export default {
         handleIconLeave() {
             this.displayInfo = false;
         },
+    },
+    beforeMount() {
+        const { name, description, svg } = this.achievement.achievement;
+        const { progress, isFulfilled, qualifier } = this.achievement;
+
+        this.name = name;
+        this.description = description;
+        this.svg = svg;
+        this.progress = progress;
+        this.isFulfilled = isFulfilled;
+        this.qualifier = qualifier;
+        this.progressLabel = this.achievement.progressLabel;
     },
 }
 </script>

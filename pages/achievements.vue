@@ -22,8 +22,6 @@
 </style>
 
 <script>
-import { Achievements} from '../js/achievements';
-const achievements = new Achievements();
 
 import Achievement from '~/components/Achievement.vue';
 

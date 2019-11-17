@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="profile" class="profile">
+        <div v-if="profile && achievements" class="profile">
             <div class="top-bar">
                 <h1 class="display-name text-2xl">{{ displayName }}</h1>
                 <div>
@@ -36,9 +36,9 @@
                 <h2>Recent Achievements...</h2>
                 <div class="achievements">
                     <app-achievement
-                        v-for="achievement in completedAchievements"
-                        :key="achievement.label"
-                        :achievement="achievement"
+                        v-for="achievement in achievements.completedAchievements"
+                        :key="achievement.name"
+                        :achievement="{ achievement: achievement, isFulfilled: true }"
                         size="full" />
                 </div>
             </div>
@@ -85,11 +85,9 @@ h2 {
 <script>
 import { mapState, mapGetters } from 'vuex';
 
-import { Achievements } from '../js/achievements';
-const achievements = new Achievements();
+import Achievement from '~/components/Achievement.vue';
 
 import Button from '~/components/Button.vue';
-import Achievement from '~/components/Achievement.vue';
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const months = ['Jnauary', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -102,41 +100,21 @@ export default {
     },
     data() {
         return {
-            startOfTimeframe: (Date.now() - (1000 * 60 * 60 * 24 * 7)),
+            startOfTimeframe: (Date.now() - (1000 * 60 * 60 * 24 * 60)),
             endOfTimeframe: Date.now(),
         };
     },
     computed: {
         ...mapState('user', [
             'profile',
+            'achievements',
         ]),
         ...mapGetters('user', [
             'displayName',
             'tests',
         ]),
-        completedAchievements() {
-            return achievements.discover(this.tests);
-        },
-        achievementsInOrderByProgress() {
-            return achievements.achievements
-                .filter((achievement) => !achievement.isFulfilled(this.tests))
-                .sort((achievementA, achievementB) => {
-                    if (!achievementA.getProgress && !achievementB.getProgress) {
-                        return 0;
-                    } else if (!achievementA.getProgress) {
-                        return 1;
-                    } else if (!achievementB.getProgress) {
-                        return -1;
-                    }
-
-                    const progressA = achievementA.getProgress(this.tests);
-                    const progressB = achievementB.getProgress(this.tests);
-                    
-                    return progressB.percent - progressA.percent;
-                });
-        },
         soonAchievements() {
-            return this.achievementsInOrderByProgress.slice(0, 3);
+            return this.achievements.incompleteAchievementsByProgress.slice(0, 3);
         },
         testsInTimeframe() {
             return this.tests.filter((test) => {
@@ -254,5 +232,8 @@ export default {
             return isNaN(accuracy) ? 0 : accuracy;
         },
     },
+    mounted() {
+        console.log()
+    }
 }
 </script>

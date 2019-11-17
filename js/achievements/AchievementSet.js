@@ -1,3 +1,6 @@
+import Achievement from "./Achievement";
+import AchievementWithProgress from "./AchievementWithProgress";
+
 /*
     [names: string[]] relates to [qualifiers: number[]]
     [description: stirng] will be parsed to replace "{qualifier}" with [level: number]
@@ -18,36 +21,39 @@ export default class AchievementSet {
             throw new Error('Achievement was created without [levels: number[]].');
             
 
-        this.label = label;
+        this.names = names;
         this.description = description;
-        this.isFulfilled = isFulfilled;
         this.getProgress = getProgress;
-        this.svg = svg;
-        this.qualifier = qualifier;
+        this.svgs = svgs;
+        this.qualifiers = qualifiers;
+    }
+
+    get descriptions() {
+        return this.qualifiers.map((qualifier) => this.description.replace('{qualifier}', qualifier));
     }
 
     get achievements() {
         return this.qualifiers
             .map((qualifier, i) => {
-                return {
+                return new Achievement({
                     name: this.names[i],
                     description: this.description.replace('{qualifier}', qualifier),
                     svg: this.svgs[i],
-                };
+                });
             });
     }
 
     getAchievementsWithProgress(tests) {
         const progress = this.getProgress(tests);
 
-        this.achievements
-            .map((achievementWithoutProgress, i) => {
-                return {
-                    ...achievementWithoutProgress,
+        return this.achievements
+            .map((achievement, i) => {
+                return new AchievementWithProgress({
+                    achievement: achievement,
                     qualifier: this.qualifiers[i],
                     progress: progress,
-                    isFulfilled: progress >= quallifier,
-                };
+                    isFulfilled: progress >= this.qualifiers[i],
+                });
             });
     }
 }
