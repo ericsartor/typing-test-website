@@ -40,7 +40,7 @@ export default [
     new AchievementSet({
         names: [ 'Beginner\'s Luck', 'On A Roll', 'Sharpshooter', 'Aimbot' ],
         qualifiers: [ 3, 10, 20, 50 ],
-        description: 'Complete {qualifier} consecutive tests withh 100% accuracy.',
+        description: 'Complete {qualifier} consecutive tests with 100% accuracy.',
         svgs: [ 'beginners-luck', 'on-a-roll', 'sharpshooter', 'aimbot' ],
         getProgress(tests) {
             return utils.consecutivePerfectTests(tests);
@@ -51,7 +51,7 @@ export default [
     new AchievementSet({
         names: [ 'Perfect', 'Accuracy I', 'Accuracy II', 'Accuracy III', 'Accuracy IV', 'Accuracy V' ],
         qualifiers: [ 1, 10, 50, 100, 500, 1000 ],
-        description: 'Complete {qualifier} consecutive tests withh 100% accuracy.',
+        description: 'Complete {qualifier} consecutive tests with 100% accuracy.',
         svgs: [ 'perfect', 'accuracy1', 'accuracy2', 'accuracy3', 'accuracy4' ,'accuracy5' ],
         getProgress(tests) {
             return tests.filter((test) => test.accuracy === 100).length;

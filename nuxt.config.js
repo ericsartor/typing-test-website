@@ -19,6 +19,7 @@ export default {
         style: 'margin: 0;padding: 0;font-family: "Josefin Sans";background-color: #F7F7FF;'
     },
     script: [
+        { src: 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js' },
         { src: 'https://cdn.jsdelivr.net/npm/chart.js@2.9.1/dist/Chart.min.js' },
     ],
   },

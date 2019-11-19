@@ -23,6 +23,10 @@
 
             <hr>
 
+            <app-timeline :timestamps="tests.map((test) => test.timestamp)" @timeframechange="logTimeframe" />
+
+            <app-chart width="100%" :setup="chartSetup" />
+
             <div class="experience-and-achievements">
                 <h2>Next Achievements...</h2>
                 <div class="achievements">
@@ -38,7 +42,7 @@
                     <app-achievement
                         v-for="achievement in achievements.completedAchievements"
                         :key="achievement.name"
-                        :achievement="{ achievement: achievement, isFulfilled: true }"
+                        :achievement="achievement"
                         size="full" />
                 </div>
             </div>
@@ -86,7 +90,8 @@ h2 {
 import { mapState, mapGetters } from 'vuex';
 
 import Achievement from '~/components/Achievement.vue';
-
+import Chart from '~/components/Chart.vue';
+import Timeline from '~/components/Timeline.vue';
 import Button from '~/components/Button.vue';
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -97,11 +102,14 @@ export default {
     components: {
         'app-achievement': Achievement,
         'app-button': Button,
+        'app-chart': Chart,
+        'app-timeline': Timeline,
     },
     data() {
         return {
-            startOfTimeframe: (Date.now() - (1000 * 60 * 60 * 24 * 60)),
+            startOfTimeframe: 0,
             endOfTimeframe: Date.now(),
+            chartDataType: 'WPM',
         };
     },
     computed: {
@@ -132,49 +140,44 @@ export default {
             console.log(d);
             return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
         },
-        lineGraphSetups() {
-            const wpmDatas = this.testsInTimeframe.map((test, i) => ({ y: test.wpm, x: i }));
-            const kpmDatas = this.testsInTimeframe.map((test, i) => ({ y: test.kpm, x: i }));
-            const accuracyDatas = this.testsInTimeframe.map((test, i) => ({ y: test.accuracy, x: i }));
+        chartSetup() {
+            const dataProperty = this.chartDataType.toLowerCase();
+            const data = this.testsInTimeframe
+                .sort((testA, testB) => testA.timestamp - testB.timestamp)
+                .map((test, i) => ({ y: test[dataProperty], x: i }));
 
-            const datas = [ wpmDatas, kpmDatas, accuracyDatas ];
-            const labels = [ 'WPM', 'KPM', 'Accuracy' ];
-
-            return datas.map((data, i) => {
-                const label = labels[i];
-                const color = this.graphColors[i & this.graphColors.length];
-
-                return {
-                    title: label,
-                    type: 'line',
-                    data: {
-                        labels: [label],
-                        datasets: [
-                            {
-                                label: label,
-                                // borderColor: 'rgb(0, 0, 0, )',
-                                pointBackgroundColor: 'rgb(125, 125, 125)',
-                                backgroundColor: color,
-                                data,
-                                lineTension: 0,
-                            },
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            xAxes: [
-                                { type: 'linear' },
-                            ],
-                            yAxes: [
-                                {
-                                    ticks: { beginAtZero: true },
-                                },
-                            ],
+            return {
+                title: this.chartDataType,
+                type: 'line',
+                data: {
+                    labels: [this.chartDataType],
+                    datasets: [
+                        {
+                            label: this.chartDataType,
+                            // borderColor: 'rgb(0, 0, 0, )',
+                            pointBackgroundColor: 'rgb(125, 125, 125)',
+                            backgroundColor: '#FF5714',
+                            data,
+                            lineTension: 0,
                         },
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        xAxes: [
+                            {
+                                type: 'linear',
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                ticks: { beginAtZero: true },
+                            },
+                        ],
                     },
-                };
-            });
+                },
+            };
         },
         wordErrorGraphSetup() {
             // { [word: stirng]: number } from every test taken
@@ -230,6 +233,17 @@ export default {
         averageAccuracy(tests) {
             const accuracy = Math.round((tests.reduce((acc, test) => acc + test.accuracy, 0) / tests.length));
             return isNaN(accuracy) ? 0 : accuracy;
+        },
+        timeframeFilter(tests) {
+            return tests
+                .filter((test) => {
+                    return test.timestamp > this.startOfTimeframe &&
+                        this.timestamp > this.endOfTimeframe;
+                })
+                .map((test, i) => ({ y: test.kpm, x: i }));
+        },
+        logTimeframe(timeframe) {
+            console.log(new Date(timeframe.start).toDateString(), new Date(timeframe.end).toDateString());
         },
     },
     mounted() {
