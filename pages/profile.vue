@@ -9,23 +9,39 @@
                 </div>
             </div>
 
-            <h2>Overall Stats</h2>
+            <div class="stats-container">
+                <div class="text-stats-container">
+                    <h2>Overall Stats</h2>
 
-            <p>{{ tests.length }} completed tests</p>
-            <p>{{ tests.filter((test) => test.accuracy === 100).length }} perfect tests</p>
-            <p>{{ averageAccuracy(tests) }}% accuracy</p>
+                    <p>{{ tests.length }} completed tests</p>
+                    <p>{{ tests.filter((test) => test.accuracy === 100).length }} perfect tests</p>
+                    <p>{{ averageAccuracy(tests) }}% accuracy</p>
 
-            <h2>Timeframe Stats ({{ startOfTimeframeDatestring }} - {{ endOfTimeframeDatestring }})</h2>
+                    <h2>Timeframe Stats</h2>
 
-            <p>{{ testsInTimeframe.length }} completed tests</p>
-            <p>{{ testsInTimeframe.filter((test) => test.accuracy === 100).length }} perfect tests</p>
-            <p>{{ averageAccuracy(testsInTimeframe) }}% accuracy</p>
+                    <p>{{ testsInTimeframe.length }} completed tests</p>
+                    <p>{{ testsInTimeframe.filter((test) => test.accuracy === 100).length }} perfect tests</p>
+                    <p>{{ averageAccuracy(testsInTimeframe) }}% accuracy</p>
+                </div>
 
-            <hr>
+                <div class="timeline-graph-container">
+                    <p class="text-center">{{ startOfTimeframeDatestring }} - {{ endOfTimeframeDatestring }}</p>
 
-            <app-timeline :timestamps="tests.map((test) => test.timestamp)" @timeframechange="logTimeframe" />
+                    <app-timeline
+                        :timestamps="[ ...tests ].sort((testA, testB) => testA.timestamp - testB.timestamp).map((test) => test.timestamp)"
+                        v-model="timeframe" />
 
-            <app-chart width="100%" :setup="chartSetup" />
+                    <a
+                        href=""
+                        v-for="property in chartDataTypes"
+                        :key="property"
+                        @click.prevent="chartDataType = property"
+                        class="mr-2 pb-1"
+                        :style="{ 'font-weight': chartDataType === property ? 'bold' : '', 'border-bottom': chartDataType === property ? '2px solid black' : '' }">{{ property }}</a>
+
+                    <app-chart width="100%" :title="false" :setup="chartSetup" :key="Date.now()" />
+                </div>
+            </div>
 
             <div class="experience-and-achievements">
                 <h2>Next Achievements...</h2>
@@ -70,6 +86,21 @@
     justify-content: space-between;
 }
 
+.stats-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.text-stats-container, .timeline-graph-container {
+    width: 50%;
+}
+
+.timeline-graph-container {
+    text-align: center;
+}
+
 .achievements {
     display: flex;
     flex-flow: row nowrap;
@@ -82,7 +113,7 @@
 
 h2 {
     text-indent: 20px;
-    margin: 40px 0 20px 0px;
+    margin: 20px 0 20px 0px;
 }
 </style>
 
@@ -107,9 +138,12 @@ export default {
     },
     data() {
         return {
-            startOfTimeframe: 0,
-            endOfTimeframe: Date.now(),
+            timeframe: {
+                start: 0,
+                end: Date.now(),
+            },
             chartDataType: 'WPM',
+            chartDataTypes: [ 'WPM', 'KPM', 'Accuracy' ],
         };
     },
     computed: {
@@ -126,18 +160,16 @@ export default {
         },
         testsInTimeframe() {
             return this.tests.filter((test) => {
-                return test.timestamp >= this.startOfTimeframe &&
-                    test.timestamp <= this.endOfTimeframe;
+                return test.timestamp >= this.timeframe.start &&
+                    test.timestamp <= this.timeframe.end;
             });
         },
         startOfTimeframeDatestring() {
-            const d = new Date(this.startOfTimeframe);
-            console.log(d);
+            const d = new Date(this.timeframe.start);
             return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
         },
         endOfTimeframeDatestring() {
-            const d = new Date(this.endOfTimeframe);
-            console.log(d);
+            const d = new Date(this.timeframe.end);
             return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
         },
         chartSetup() {
@@ -234,20 +266,6 @@ export default {
             const accuracy = Math.round((tests.reduce((acc, test) => acc + test.accuracy, 0) / tests.length));
             return isNaN(accuracy) ? 0 : accuracy;
         },
-        timeframeFilter(tests) {
-            return tests
-                .filter((test) => {
-                    return test.timestamp > this.startOfTimeframe &&
-                        this.timestamp > this.endOfTimeframe;
-                })
-                .map((test, i) => ({ y: test.kpm, x: i }));
-        },
-        logTimeframe(timeframe) {
-            console.log(new Date(timeframe.start).toDateString(), new Date(timeframe.end).toDateString());
-        },
     },
-    mounted() {
-        console.log()
-    }
 }
 </script>

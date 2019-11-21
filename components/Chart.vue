@@ -1,6 +1,6 @@
 <template>
     <div :style="{ width: width }">
-        <h2>{{ setup.title }}</h2>
+        <h2 v-if="title !== false">{{ setup.title }}</h2>
         <div class="chart-container">
             <canvas ref="chart"></canvas>
         </div>
@@ -20,7 +20,7 @@ h2 {
 
 <script>
 export default {
-    props: ['setup', 'width'],
+    props: ['setup', 'width', 'title'],
     data() {
         return {
             chart: null,
