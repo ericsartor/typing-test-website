@@ -1,5 +1,5 @@
 <template>
-    <div class="timeline-container" :key="resizeTimestamp" @click.prevent>
+    <div class="timeline-container" @click.prevent>
         <div class="timeline" ref="timeline" @mousedown.prevent="handleMouseDown" @dblclick.prevent="selectWholeTimeline">
             <div class="day-container" @click.prevent>
                 <div
@@ -53,10 +53,14 @@
 <script>
 export default {
     props: {
+        // array of Epoch millisecond timestamps
         timestamps: {
             required: true,
             type: Array,
         },
+
+        // { start: timestamp, end: timestamp }
+        // the currently selected range of time within the timeline
         value: {
             required: true,
             type: Object,
@@ -64,23 +68,25 @@ export default {
     },
     data() {
         return {
-            timeframeAnchorPercent: 0,
-            timeframeReleasePercent: 1,
-            dragging: false,
-            timelineRefExists: false,
-            resizeTimestamp: 0,
+            timeframeAnchorPercent: 0,  // calculated when a mousedown event happens
+            timeframeReleasePercent: 1, // calculated when a mouseup event happens
+            dragging: false,            // flipped to true after a mousedown and back after mouseup
+            timelineRefExists: false,   // flipped after the component mounts and refs are available
         };
     },
     computed: {
+        // earliest timestamp in the array
         startTimestamp() {
             return this.timestamps[0];
         },
+
+        // latest timestamp in the array
         endTimestamp() {
             return this.timestamps[this.timestamps.length - 1];
         },
-        isReversed() {
-            return this.timeframeAnchorPercent > this.timeframeReleasePercent;
-        },
+
+        // array of Day objects, each representing the timestamps in a given day
+        // days without timestamps are generated between days with timestamps for the full time range
         days() {
             const dayInMilliseconds = 1000 * 60 * 60 * 24;
 
@@ -113,12 +119,19 @@ export default {
 
             return days;
         },
+
+        // width of a day's worth of timestamps on the timeline
         dayWidthInPercent() {
             return 100 / this.days.length;
         },
+
+        // the length of the timestamps array on the day with the most timestamps
+        // used to calculate the color of each day based on how many timestamps there are in it
         mostTimestampsInDay() {
             return this.days.reduce((highest, day) => Math.max(highest, day.timestamps.length), 0);
         },
+
+        // styles for the highlight selection element
         highlightDivStyles() {
             if (this.timeframeAnchorPercent === null || this.timeframeReleasePercent === null) {
                 return {
@@ -127,7 +140,7 @@ export default {
             } else {
                 const startPercent = Math.min(this.timeframeAnchorPercent, this.timeframeReleasePercent);
                 const endPercent = Math.max(this.timeframeAnchorPercent, this.timeframeReleasePercent);
-                console.log(startPercent, endPercent);
+
                 return {
                     position: 'relative',
                     left: startPercent * 100 + '%',
@@ -137,6 +150,8 @@ export default {
         },
     },
     methods: {
+
+        // returns a dummy rect object until the component's refs are available
         getTimelineRect() {
             return this.timelineRefExists ? this.$refs.timeline.getBoundingClientRect() :
                 {
@@ -148,10 +163,15 @@ export default {
                     top: 0,
                 };
         },
+
+        // when a mouse event happens, calculate what percentage along the timeline it happened on
         calculateMouseEventPercent(clientX) {
             const { width, left } = this.getTimelineRect();
             return (clientX - left) / width;
         },
+
+        // sets the timeframeAnchorPercent and sets up a one-time mouseup listener to emit
+        // an update once the timeline highlight drag is complete
         handleMouseDown({ clientX }) {
             this.timeframeAnchorPercent = this.calculateMouseEventPercent(clientX);
             this.timeframeReleasePercent = null;
@@ -165,17 +185,22 @@ export default {
                 }
             }, { once: true });
         },
-        reset() {
-            this.timeframeAnchorPercent = null;
-            this.timeframeReleasePercent = null;
-        },
+
+        // generate a timestamp from the timeline based on a percentage
         getTimestampFromPercent(percent) {
             return (this.endTimestamp - this.startTimestamp) * percent + this.startTimestamp;
         },
+
+        // highlight the whole timeline then emit an update 
         selectWholeTimeline() {
             this.timeframeAnchorPercent = 0;
             this.timeframeReleasePercent = 1;
+
+            this.update();
         },
+
+        // by default, emit an update for v-model based on the current highlight selection,
+        // but if an updateOverride is passed in, emit that instead
         update(updateOverride) {
             const update = {
                 start: this.getTimestampFromPercent(Math.min(this.timeframeAnchorPercent, this.timeframeReleasePercent)),
@@ -186,22 +211,24 @@ export default {
         },
     },
     beforeMount() {
+
+        // everytime the mouse moves while dragging = true, update the timeframeReleasePercent
+        // so that the higlight element expands to meet the mouse, but do not emit an update
         window.addEventListener('mousemove', ({ clientX }) => {
             if (!this.dragging) return;
 
+            // ensure the percent cannot go below 0 or above 1
             this.timeframeReleasePercent = Math.min(Math.max(this.calculateMouseEventPercent(clientX), 0), 1);
         });
 
-        window.addEventListener('resize', () => {
-            this.resizeTimestamp = performance.now();
-        });
-
+        // by default, select the whole timeline
         this.update({
             start: this.startTimestamp,
             end: this.endTimestamp,
         });
     },
     mounted() {
+        // once mounted, refs are avaiable
         this.timelineRefExists = true;
     },
 }
