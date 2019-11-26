@@ -1,6 +1,6 @@
 export default class AchievementWithProgress {
-    constructor({ achievement, qualifier, progress, isFulfilled }) {
-        this.achievement = achievement;
+    constructor({ details, qualifier, progress, isFulfilled }) {
+        this.details = details;
         this.qualifier = qualifier;
         this.progress = progress;
         this.isFulfilled = isFulfilled;

@@ -49,7 +49,7 @@ export default class AchievementSet {
         return this.achievements
             .map((achievement, i) => {
                 return new AchievementWithProgress({
-                    achievement: achievement,
+                    details: achievement,
                     qualifier: this.qualifiers[i],
                     progress: progress,
                     isFulfilled: progress >= this.qualifiers[i],

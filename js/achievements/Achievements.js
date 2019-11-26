@@ -1,5 +1,4 @@
 import achievementSets from './achievementSets';
-import AchievementWithProgress from './AchievementWithProgress';
 
 export default class Achievements {
 
@@ -10,39 +9,8 @@ export default class Achievements {
 
         this.completedAchievements = [];
 
-        // get the achievements the logged in user has already completed
-        // this.completedAchievements = this.profile.achievements
-        //     .map((userAchievement) => {
-        //         const setContainingAchievement = achievementSets
-        //             .find((achievementSet) => achievementSet.names.includes(userAchievement.name));
-
-        //         const achievementIndex = setContainingAchievement.names.indexOf(userAchievement.name);
-                
-        //         const achievement = setContainingAchievement.achievements[achievementIndex];
-
-        //         return new AchievementWithProgress({
-        //             achievement: achievement,
-        //             isFulfilled: true,
-        //             progress: 1,
-        //             qualifier: 1,
-        //         });
-        //     });
-
         // create the non-completed achievement list
         this.remainingAchievementSets = achievementSets;
-            // .map((achievementSet) => {
-            //     achievementSet.names
-            //         .map((name, i) => {
-            //             this.completedAchievements.find((achievementWithProgress) => {
-            //                 return achievementWithProgress.achievement.name === name;
-            //             }) ? i : false;
-            //         })
-            //         .filter((index) => index !== false)
-            //         .reverse()
-            //         .forEach((index) => this.removeAchievementFromSet(achievementSet, index));
-
-            //     return achievementSet;
-            // });
 
         this.checkForCompletedAchievements(this.profile.tests);
     }
@@ -62,8 +30,8 @@ export default class Achievements {
                     .getAchievementsWithProgress(this.profile.tests)
                     .filter((achievementWithProgress) => achievementWithProgress.isFulfilled)
                     .map((achievementWithProgress) => {
-                        const { achievement } = achievementWithProgress;
-                        const removeIndex = remainingAchievementSet.names.indexOf(achievement.name);
+                        const { details } = achievementWithProgress;
+                        const removeIndex = remainingAchievementSet.names.indexOf(details.name);
                         this.removeAchievementFromSet(remainingAchievementSet, removeIndex);
 
                         return achievementWithProgress;
@@ -90,9 +58,6 @@ export default class Achievements {
         return this.remainingAchievementSets
             .map((achievementSet) => achievementSet.getAchievementsWithProgress(this.profile.tests))
             .flat(Infinity)
-            // .filter((achievementWithProgress) => {
-            //     return !achievementWithProgress.isFulfilled;
-            // })
             .sort((achievementA, achievementB) => {
                 const progressA = achievementA.progress / achievementA.qualifier;
                 const progressB = achievementB.progress / achievementB.qualifier;

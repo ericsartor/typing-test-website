@@ -134,7 +134,7 @@ export default {
         },
         size: {
             type: String,
-            required: true,
+            default: 'full',
         },
     },
     data() {
@@ -161,7 +161,7 @@ export default {
         },
     },
     beforeMount() {
-        const { name, description, svg } = this.achievement.achievement;
+        const { name, description, svg } = this.achievement.details;
         const { progress, isFulfilled, qualifier } = this.achievement;
 
         this.name = name;

@@ -4,7 +4,7 @@
             {{ log() }}
             <app-achievement
                 v-for="achievement in achievements.allAchievements"
-                :key="achievement.achievement.name"
+                :key="achievement.details.name"
                 :achievement="achievement"
                 size="full" />
         </div>

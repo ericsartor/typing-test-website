@@ -6,6 +6,12 @@
         <h2 v-if="!profile" class="text-center mb-5">
             Log in to track your progress, earn achievements and gain access to tailored tests!
         </h2>
+        <div v-else class="achievement-container">
+            <app-achievement
+                v-for="achievement in achievements.incompleteAchievementsByProgress.slice(0, 3)"
+                :key="achievement.details.name"
+                :achievement="achievement" />
+        </div>
 
         <div class="chart-container" :style="{ opacity: profile ? 1 : 0.2 }">
             <app-chart v-for="(setup, i) in lineGraphSetups" :setup="setup" width="30%" :key="Date.now() + 'line' + i" />
@@ -25,12 +31,18 @@
     flex-flow: row wrap;
     justify-content: space-around;
 }
+
+.achievement-container {
+    display: flex;
+    flex-flow: row nowrap;
+}
 </style>
 
 <script>
 import TypingTest from '~/components/TypingTest.vue';
 import Chart from '~/components/Chart.vue';
 import TestCompleteModal from '~/components/TestCompleteModal.vue';
+import Achievement from '~/components/Achievement.vue';
 
 import { mapState, mapGetters, mapMutations } from 'vuex';
 
@@ -39,6 +51,7 @@ export default {
         'app-typing-test': TypingTest,
         'app-chart': Chart,
         'app-test-complete-complete': TestCompleteModal,
+        'app-achievement': Achievement,
     },
     name: 'Home',
     data() {
@@ -53,6 +66,7 @@ export default {
     computed: {
         ...mapState('user', [
             'profile',
+            'achievements',
         ]),
         ...mapGetters('user', [
             'tests',
