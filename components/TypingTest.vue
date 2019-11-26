@@ -198,7 +198,7 @@ export default {
 			this.words = [];
             this.errorMap = {};
         },
-		startNewTest() {
+		initializeTest() {
             this.resetTest();
             
             // generate the test text to type
@@ -348,9 +348,15 @@ export default {
             this.errorMap = errorMap;
         },
 		completeTest() {
-            this.$emit('testcomplete', this.testDetails);
             this.blurInput();
-			this.startNewTest();
+
+            const startNextTest = () => {
+                this.initializeTest();
+                this.focusInput();
+            };
+
+            this.$emit('testcomplete', { testResults: this.testDetails, startNextTest });
+			
         },
         
         focusInput() {
@@ -365,7 +371,7 @@ export default {
         },
 	},
 	mounted() {
-        this.startNewTest();
+        this.initializeTest();
 	},
 }
 </script>

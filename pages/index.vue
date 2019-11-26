@@ -11,6 +11,11 @@
             <app-chart v-for="(setup, i) in lineGraphSetups" :setup="setup" width="30%" :key="Date.now() + 'line' + i" />
             <app-chart :setup="wordErrorGraphSetup" width="90%" height="200" :key="Date.now() + 'bar'" />
         </div>
+
+        <app-test-complete-complete
+            v-if="testResults"
+            :testResults="testResults"
+            :startNextTest="startNextTest" />
     </div>
 </template>
 
@@ -25,6 +30,7 @@
 <script>
 import TypingTest from '~/components/TypingTest.vue';
 import Chart from '~/components/Chart.vue';
+import TestCompleteModal from '~/components/TestCompleteModal.vue';
 
 import { mapState, mapGetters, mapMutations } from 'vuex';
 
@@ -32,6 +38,7 @@ export default {
     components: {
         'app-typing-test': TypingTest,
         'app-chart': Chart,
+        'app-test-complete-complete': TestCompleteModal,
     },
     name: 'Home',
     data() {
@@ -40,6 +47,7 @@ export default {
             graphColors: [ '#EA526F', '#3DC2F7', '#FF5714' ],
             characterWidth: 0,
             characterHeight: 0,
+            testResults: null,
         };
     },
     computed: {
@@ -147,16 +155,22 @@ export default {
         ...mapMutations('user', [
             'logTest',
         ]),
-        handleTest(test) {
-            this.logTest(test);
+        handleTest({ testResults, startNextTest }) {
+            this.logTest(testResults);
 
             if (this.profile) {
                 this.$db().ref('/users/' + this.profile.uid).set(this.profile);
             }
+
+            this.testResults = testResults;
+            this.startNextTest = () => {
+                startNextTest();
+                this.testResults = null;
+            };
+        },
+        startNextTest() {
+            this.testResults = null;
         },
     },
-    mounted() {
-        setTimeout(() => console.log(Achievements.discover(this.tests)), 3000);
-    }
 }
 </script>
