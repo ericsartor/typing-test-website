@@ -35,8 +35,6 @@
 - organize list of achievements on achievements page
     - 100% first, then in progress, then not started
 
-- on test page, suggest achievements the user is close to getting
-
 - share on social media functionality
     - facebook
     - reddit
