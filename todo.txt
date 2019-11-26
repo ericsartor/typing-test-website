@@ -1,20 +1,13 @@
 - profile/profile editing
     - add elements for
-        - achievements
         - leaderboard rankings
         - stats
             - number of tests/perfect tests
             - personal bests
-            - graphs
-                - customizable timeframe
-        - change password
-        - delete account
     - add edit buttons for 
         - username
     - implement change password
     - implement delete account
-
-- achievement discovery system should report achievements to server
 
 - should check for new achievements after
     - tests
@@ -42,7 +35,7 @@
 - organize list of achievements on achievements page
     - 100% first, then in progress, then not started
 
-- on test page and profile page, suggest achievements the user is close to getting
+- on test page, suggest achievements the user is close to getting
 
 - share on social media functionality
     - facebook
