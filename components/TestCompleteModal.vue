@@ -115,6 +115,11 @@ export default {
             type: Function,
         },
     },
+    data() {
+        return {
+            keyListener: null,
+        };
+    },
     computed: {
         words() {
             return Object.keys(this.testResults.errorMap);
@@ -125,13 +130,20 @@ export default {
         }
     },
     beforeMount() {
-        const listener = window.addEventListener('keydown', (event) => {
+        const that = this;
+
+        this.keyListener = (event) => {
             if (event.key === 'Enter') {
-                this.startNextTest();
+                that.startNextTest();
             } else if (event.key === ' ') {
                 event.preventDefault();
             }
-        });
-    }
+        }
+        
+        window.addEventListener('keydown', this.keyListener);
+    },
+    beforeDestroy() {
+        window.removeEventListener('keydown', this.keyListener);
+    },
 }
 </script>
