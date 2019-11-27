@@ -14,10 +14,11 @@
                 type="text"
                 class="user-input"
                 :style="{ 'margin-left': characterWidth + 'px' }"
-                placeholder="> "
+                placeholder=""
                 @input="handleUserInput($event)"
                 v-model="textWrittenByUser"
                 ref="userInput">
+            <p v-if="!textWrittenByUser.length" class="placeholder-text">> the test begins when you begin typing...</p>
         </div>
     </div>
 </template>
@@ -27,6 +28,13 @@
     box-shadow: 0 0 5px gray;
     margin-bottom: 20px;
     z-index: 0;
+}
+
+.input-container {
+    height: 50px;
+    background: white;
+    width: 100%;
+    position: relative;
 }
 
 .user-input {
@@ -39,11 +47,14 @@
 	font-family: "Ubuntu Mono";
 }
 
-.input-container {
-    height: 50px;
-    background: white;
-    width: 100%;
-    position: relative;
+.placeholder-text {
+    position: absolute;
+    width: 50%;
+    right: 22px;
+    top: 0;
+    font-size: 2em;
+    font-family: "Ubuntu Mono";
+    opacity: 0.1;
 }
 </style>
 

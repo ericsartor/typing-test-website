@@ -1,8 +1,8 @@
 <template>
 
-    <div class="overlay">
+    <div class="overlay" @click="startNextTest">
 
-        <div class="window">
+        <div class="window" @click.stop>
 
             <div>
 
@@ -28,12 +28,16 @@
 
                 <div class="errors-container mb-5">
 
-                    <p
-                        v-for="word in words"
-                        :key="word"
-                        class="mx-5">
-                        {{ word }}: {{ testResults.errorMap[word] }}
-                    </p>
+                    <template v-if="words.length">
+                        <p
+                            v-for="word in words"
+                            :key="word"
+                            class="mx-5">
+                            {{ word }}: {{ testResults.errorMap[word] }}
+                        </p>
+                    </template>
+
+                    <p v-else class="mx-5">No words mispelled!</p>
 
                 </div>
 
@@ -58,6 +62,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 100;
 }
 
 .window {
@@ -115,14 +120,16 @@ export default {
             return Object.keys(this.testResults.errorMap);
         },
         numberStats() {
-            const { wpm, kpm, errors } = this.testResults;
-            return { WPM: wpm, KPM: kpm, Errors: errors };
+            const { accuracy, wpm, kpm, errors } = this.testResults;
+            return { Accuracy: accuracy + '%', WPM: wpm, KPM: kpm, Errors: errors };
         }
     },
     beforeMount() {
-        const listener = window.addEventListener('keydown', ({ key }) => {
-            if (key === 'Enter') {
+        const listener = window.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
                 this.startNextTest();
+            } else if (event.key === ' ') {
+                event.preventDefault();
             }
         });
     }
